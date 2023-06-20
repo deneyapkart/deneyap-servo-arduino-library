@@ -42,12 +42,9 @@ void Servo::write(int value) {
   //delay(DELAYMS);
 }
 
-/*
 void Servo::writeMicroseconds(int value) {
-  if(value < 100) value = 100;
-  if(value > 500) value = 500;
-  int servoValue = value;
-  ledcWrite(_channel, servoValue); // _channel select servoValue(duty) to be set for selected channel
-  //delay(DELAYMS);
+  if (value < 0) value = 0;
+  if (value > 3000) value = 3000;
+  value = map(value, 0, 3000, 0, 180);
+  this->write(value);
 }
-*/
