@@ -29,6 +29,16 @@ void Servo::attach(int pin, int channel, int freq, int resolution) {
 }
 
 /**
+ * @brief   detached the given pin
+ * @param   @pin : servo pin
+ * @retval  None
+**/
+
+void Servo::detach(uint8_t pin) {
+  ledcDetachPin(pin);
+}
+
+/**
  * @brief   writes servo value 0-180 as degree
  * @param   @value: servo value 0-180 as degree
  * @retval  None

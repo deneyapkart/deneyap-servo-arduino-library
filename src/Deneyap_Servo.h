@@ -28,6 +28,7 @@
 class Servo {
 public:
   void attach(int pin, int channel = PWMCHANNEL, int freq = PWMFREQ, int resolution = PWMRESOLUTION);
+  void detach(uint8_t pin);
   void write(int value);
   void writeMicroseconds(int value);
 private:
