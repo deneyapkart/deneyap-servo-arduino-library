@@ -29,8 +29,8 @@ void Servo::attach(int pin, int channel, int freq, int resolution) {
 }
 
 /**
- * @brief   writes servo value 0-180 as degree
- * @param   @value: servo value 0-180 as degree
+ * @brief   writes servo value 0-SERVOMAX as degree
+ * @param   @value: servo value 0-SERVOMAX as degree
  * @retval  None
 **/
 
