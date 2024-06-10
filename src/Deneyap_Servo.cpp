@@ -36,7 +36,7 @@ void Servo::attach(int pin, int channel, int freq, int resolution) {
 
 void Servo::write(int value) {
   if(value < 0) value = 0;
-  if(value > 180) value = 180;
+  if(value > SERVOMAX) value = SERVOMAX;
   int servoValue = (value - SERVOMIN) * (DUTYCYLEMAX - DUTYCYLEMIN) / (SERVOMAX - SERVOMIN) + DUTYCYLEMIN; // mapping to SERVOMIN-SERVOMAX values from DUTYCYLEMIN-DUTYCYLEMAX values
   ledcWrite(_channel, servoValue); // _channel select servoValue(duty) to be set for selected channel
   //delay(DELAYMS);
