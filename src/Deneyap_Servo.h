@@ -30,6 +30,8 @@ public:
   void attach(int pin, int channel = PWMCHANNEL, int freq = PWMFREQ, int resolution = PWMRESOLUTION);
   void write(int value);
   void writeMicroseconds(int value);
+  int read();
+  int readMicroseconds();
 private:
   int _channel;
 };

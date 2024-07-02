@@ -7,6 +7,9 @@ List fo Functions
 ```c++
 void attach(int pin, int channel, int freq, int resolution);
 void write(int value);
+void writeMicroseconds(int value);
+int read();
+int readMicroseconds();
 ```
 
 ## :bookmark_tabs:License Information
