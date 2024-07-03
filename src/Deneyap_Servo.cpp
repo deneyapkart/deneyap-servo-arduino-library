@@ -52,6 +52,7 @@ void Servo::writeMicroseconds(int value) {
 int Servo::read() {
   int dutyCycle = ledcRead(_channel);
   int newDutyCycle = map(dutyCycle, DUTYCYLEMIN, DUTYCYLEMAX, SERVOMIN, SERVOMAX) + 1;
+  if(newDutyCycle % 45 == 0) newDutyCycle--;
   return map(newDutyCycle, SERVOMIN, SERVOMAX, 0, 180);
 }
 
