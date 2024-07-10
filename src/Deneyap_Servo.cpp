@@ -59,3 +59,49 @@ int Servo::read() {
 int Servo::readMicroseconds() { 
   this->read();
 }
+
+/*******************360 Servo Functions*****************/
+
+
+/**
+ * @brief   attaches the given pin, channel, freq, resolution
+ * @param   @pin : servo pin
+ *          @channel : channel of pwm
+ *          @freq : frequency of pwm
+ *          @resolution : range is 1-14 bits (1-20 bits for ESP32)
+ * @retval  None
+**/
+
+void Servo360::attach(int pin, int channel, int freq, int resolution) {
+  _360channel = channel;
+  if(channel > 15) channel = 15;
+  ledcSetup(_360channel, freq, resolution);
+  ledcAttachPin(pin, channel);
+  ledcWrite(_360channel, FIRSTDUTY);
+}
+
+void Servo360::write(int value) {
+	if (value < SERVO360MIN) value = SERVO360MIN;
+	else if (value > SERVO360MAX) value = SERVO360MAX;
+	int servoValue = (value - SERVO360MIN) * (DUTYCYLEMAX - DUTYCYLEMIN) / (SERVO360MAX - SERVO360MIN) + DUTYCYLEMIN; // mapping to SERVOMIN-SERVOMAX values from DUTYCYLEMIN-DUTYCYLEMAX values
+	ledcWrite(_360channel, servoValue); // _channel select servoValue(duty) to be set for selected channel
+	//delay(DELAYMS);
+}
+
+void Servo360::writeMicroseconds(int value) {
+	if (value < 0) value = 0;
+	else if (value > 3000) value = 3000;
+	value = map(value, 0, 3000, SERVO360MIN, SERVO360MAX);
+	this->write(value);
+}
+
+int Servo360::read() {
+	int dutyCycle = ledcRead(_360channel);
+	int newDutyCycle = map(dutyCycle, DUTYCYLEMIN, DUTYCYLEMAX, SERVO360MIN, SERVO360MAX) + 1;
+	if (newDutyCycle % 45 == 0) newDutyCycle--;
+	return map(newDutyCycle, SERVO360MIN, SERVO360MAX, 0, 180);
+}
+
+int Servo360::readMicroseconds() {
+	this->read();
+}
