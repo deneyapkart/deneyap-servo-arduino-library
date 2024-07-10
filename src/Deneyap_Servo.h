@@ -25,6 +25,14 @@
 #define DUTYCYLEMIN 100
 #define DUTYCYLEMAX 500
 
+#define PWMFREQ360 50
+#define PWMCHANNEL360 1
+
+#define SERVO360MIN 0
+#define SERVO360MAX 360
+#define DUTYCYLE360MIN 100
+#define DUTYCYLE360MAX 500
+
 class Servo {
 public:
   void attach(int pin, int channel = PWMCHANNEL, int freq = PWMFREQ, int resolution = PWMRESOLUTION);
@@ -34,6 +42,17 @@ public:
   int readMicroseconds();
 private:
   int _channel;
+};
+
+class Servo360 {
+public:
+    void attach(int pin, int channel = PWMCHANNEL360, int freq = PWMFREQ360, int resolution = PWMRESOLUTION);
+    void write(int value);
+    void writeMicroseconds(int value);
+    int read();
+    int readMicroseconds();
+private:
+    int _360channel;
 };
 
 #endif /* _DENEYAPSERVO_H_ */
