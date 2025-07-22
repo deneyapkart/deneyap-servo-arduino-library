@@ -2,8 +2,7 @@
 *************************************************************************************************
 @file         Deneyap_Servo.cpp
 @mainpage     Deneyap Servo Arduino library source file
-@maintainer   RFtek Electronics <techsupport@rftek.com.tr>
-@version      v1.0.0
+@version      v1.1.0
 @date         October 20, 2022
 @brief        Includes functions to drive servo motor for Deneyap Development Boards
 *************************************************************************************************
