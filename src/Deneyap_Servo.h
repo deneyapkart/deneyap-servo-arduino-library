@@ -22,8 +22,8 @@
 
 #define SERVOMIN 0
 #define SERVOMAX 180
-#define DUTYCYLEMIN 100
-#define DUTYCYLEMAX 500
+#define DUTYCYLEMIN 97
+#define DUTYCYLEMAX 521
 
 #define SERVO360MIN 0
 #define SERVO360MAX 360
@@ -42,6 +42,7 @@ public:
   int readMicroseconds();
 private:
   int _channel;
+  int _pin;
 };
 
 class ESC {

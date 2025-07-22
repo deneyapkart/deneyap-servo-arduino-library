@@ -22,10 +22,10 @@
 
 void Servo::attach(int pin, int channel, int freq, int resolution) {
   _channel = channel;
+  _pin = pin;
   if(channel > 15) channel = 15;
-  ledcSetup(_channel, freq, resolution);
-  ledcAttachPin(pin, channel);
-  ledcWrite(_channel, FIRSTDUTY);
+  ledcAttachChannel(pin, freq, resolution, channel);
+  ledcWriteChannel(_channel, FIRSTDUTY);
 }
 
 /**
@@ -34,12 +34,18 @@ void Servo::attach(int pin, int channel, int freq, int resolution) {
  * @retval  None
 **/
 
+void ESC::attach(int pin, int channel, int freq, int resolution) {
+  _channel = channel;
+  if(channel > 15) channel = 15;
+  ledcAttachChannel(pin, freq, resolution, channel);
+  ledcWriteChannel(_channel, FIRSTDUTY);
+}
+
 void Servo::write(int value) {
   if(value < SERVOMIN) value = SERVOMIN;
   if(value > SERVOMAX) value = SERVOMAX;
   int servoValue = (value - SERVOMIN) * (DUTYCYLEMAX - DUTYCYLEMIN) / (SERVOMAX - SERVOMIN) + DUTYCYLEMIN; // mapping to SERVOMIN-SERVOMAX values from DUTYCYLEMIN-DUTYCYLEMAX values
-  ledcWrite(_channel, servoValue); // _channel select servoValue(duty) to be set for selected channel
-  //delay(DELAYMS);
+  ledcWriteChannel(_channel, servoValue); // _channel select servoValue(duty) to be set for selected channel
 }
 
 void Servo::writeMicroseconds(int value) {
@@ -49,30 +55,25 @@ void Servo::writeMicroseconds(int value) {
   this->write(value);
 }
 
-void ESC::attach(int pin, int channel, int freq, int resolution) {
-  _channel = channel;
-  if(channel > 15) channel = 15;
-  ledcSetup(_channel, freq, resolution);
-  ledcAttachPin(pin, channel);
-  ledcWrite(_channel, FIRSTDUTY);
-}
-
-int Servo::read() {
-  int dutyCycle = ledcRead(_channel);
-  int newDutyCycle = map(dutyCycle, DUTYCYLEMIN, DUTYCYLEMAX, SERVOMIN, SERVOMAX) + 1;
-  if(newDutyCycle % 45 == 0) newDutyCycle--;
-  return map(newDutyCycle, SERVOMIN, SERVOMAX, 0, 180);
-}
-
-int Servo::readMicroseconds() { 
-  this->read();
-}
 void ESC::write(int value) {
   if(value < ESCMIN) value = ESCMIN;
   if(value > ESCMAX) value = ESCMAX;
   int escValue = (value - ESCMIN) * (ESCDUTYCYLEMAX - ESCDUTYCYLEMIN) / (ESCMAX - ESCMIN) + ESCDUTYCYLEMIN; // mapping to SERVOMIN-SERVOMAX values from DUTYCYLEMIN-DUTYCYLEMAX values
-  ledcWrite(_channel, escValue); // _channel select servoValue(duty) to be set for selected channel
-  //delay(DELAYMS);
+  ledcWriteChannel(_channel, escValue); // _channel select servoValue(duty) to be set for selected channel
+}
+
+int Servo::read() {
+  int dutyCycle = ledcRead(_pin);
+  int newDutyCycle = map(dutyCycle, DUTYCYLEMIN, DUTYCYLEMAX, SERVOMIN, SERVOMAX);
+  if(newDutyCycle % 45 == 0){
+    return newDutyCycle;
+  } else {
+    return newDutyCycle + 1;
+  }
+}
+
+int Servo::readMicroseconds() {
+  this->read();
 }
 
 /*void Servo360::attach(int pin, int channel, int freq, int resolution) {
