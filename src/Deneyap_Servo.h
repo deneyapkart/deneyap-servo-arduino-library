@@ -2,7 +2,7 @@
 *****************************************************************************
 @file         Deneyap_Servo.h
 @mainpage     Deneyap Servo Arduino library header file
-@version      v1.1.0
+@version      v1.1.1
 @date         October 20, 2022
 @brief        This file contains all function prototypes and macros
               for servo motor Arduino library for Deneyap Development Boards

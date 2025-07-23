@@ -2,7 +2,7 @@
 *************************************************************************************************
 @file         Deneyap_Servo.cpp
 @mainpage     Deneyap Servo Arduino library source file
-@version      v1.1.0
+@version      v1.1.1
 @date         October 20, 2022
 @brief        Includes functions to drive servo motor for Deneyap Development Boards
 *************************************************************************************************
@@ -10,6 +10,9 @@
 
 #include "Deneyap_Servo.h"
 
+#ifndef CORE_DK_VERSION
+  #define CORE_DK_VERSION 0    // fallback
+#endif
 /**
  * @brief   attaches the given pin, channel, freq, resolution
  * @param   @pin : servo pin
@@ -23,8 +26,14 @@ void Servo::attach(int pin, int channel, int freq, int resolution) {
   _channel = channel;
   _pin = pin;
   if(channel > 15) channel = 15;
+  #if CORE_DK_VERSION <= 103013
+  ledcSetup(_channel, freq, resolution);
+  ledcAttachPin(pin, channel);
+  ledcWrite(_channel, FIRSTDUTY);
+  #else
   ledcAttachChannel(pin, freq, resolution, channel);
   ledcWriteChannel(_channel, FIRSTDUTY);
+  #endif
 }
 
 /**
@@ -36,15 +45,25 @@ void Servo::attach(int pin, int channel, int freq, int resolution) {
 void ESC::attach(int pin, int channel, int freq, int resolution) {
   _channel = channel;
   if(channel > 15) channel = 15;
+  #if CORE_DK_VERSION <= 103013
+  ledcSetup(_channel, freq, resolution);
+  ledcAttachPin(pin, channel);
+  ledcWrite(_channel, FIRSTDUTY);
+  #else
   ledcAttachChannel(pin, freq, resolution, channel);
   ledcWriteChannel(_channel, FIRSTDUTY);
+  #endif
 }
 
 void Servo::write(int value) {
   if(value < SERVOMIN) value = SERVOMIN;
   if(value > SERVOMAX) value = SERVOMAX;
   int servoValue = (value - SERVOMIN) * (DUTYCYLEMAX - DUTYCYLEMIN) / (SERVOMAX - SERVOMIN) + DUTYCYLEMIN; // mapping to SERVOMIN-SERVOMAX values from DUTYCYLEMIN-DUTYCYLEMAX values
+  #if CORE_DK_VERSION <= 103013
+  ledcWrite(_channel, servoValue);
+  #else
   ledcWriteChannel(_channel, servoValue); // _channel select servoValue(duty) to be set for selected channel
+  #endif
 }
 
 void Servo::writeMicroseconds(int value) {
@@ -58,11 +77,19 @@ void ESC::write(int value) {
   if(value < ESCMIN) value = ESCMIN;
   if(value > ESCMAX) value = ESCMAX;
   int escValue = (value - ESCMIN) * (ESCDUTYCYLEMAX - ESCDUTYCYLEMIN) / (ESCMAX - ESCMIN) + ESCDUTYCYLEMIN; // mapping to SERVOMIN-SERVOMAX values from DUTYCYLEMIN-DUTYCYLEMAX values
+  #if CORE_DK_VERSION <= 103013
+  ledcWrite(_channel, escValue);
+  #else
   ledcWriteChannel(_channel, escValue); // _channel select servoValue(duty) to be set for selected channel
+  #endif
 }
 
 int Servo::read() {
+  #if CORE_DK_VERSION <= 103013
+  int dutyCycle = ledcRead(_channel);
+  #else
   int dutyCycle = ledcRead(_pin);
+  #endif
   int newDutyCycle = map(dutyCycle, DUTYCYLEMIN, DUTYCYLEMAX, SERVOMIN, SERVOMAX);
   if(newDutyCycle % 45 == 0){
     return newDutyCycle;
